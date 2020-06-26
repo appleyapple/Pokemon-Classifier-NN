@@ -7,4 +7,5 @@ This project aims to classify Pokemon by type(s) using a multi-class duplicated 
 
 ## Resources
 Dataset: Scraped from [PokeAPI](https://pokeapi.co/)
-[Heavily inpspired by my previous work with Andy Liu](https://github.com/AndyLiuCodes/Music-Genre-Classification-with-CNN-Hybrid-Architectures)
+
+Previous works: Heavily inpspired by my [group project](https://github.com/AndyLiuCodes/Music-Genre-Classification-with-CNN-Hybrid-Architectures) with Andy Liu
