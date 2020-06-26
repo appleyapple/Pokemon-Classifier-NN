@@ -1,7 +1,7 @@
-import requests
-import shutil
 import os
 import pandas as pd
+import numpy as np
+from PIL import Image
 from util import *
 
 
@@ -24,22 +24,27 @@ print('Starting dataset creation...')
 
 # Setup dataset directory tree
 try:
-    os.makedirs('../Dataset/Sprites')
+    os.makedirs('../Dataset')
 
 except FileExistsError:
     print('Dataset directory already exists...')
+    print('Recreating dataset...')
+    shutil.rmtree('../Dataset')
+
+os.makedirs('../Dataset/Sprites')
+os.makedirs('../Dataset/Train')
+os.makedirs('../Dataset/Test')
 
 
 # Ordered lists containing Pokemon data
 ids = []
 names = []
-primary_types = []
-secondary_types = []
+types = []
 sprites = []
 
 
 # Extract necessary data from PokeAPI; one entry per sprite
-print('Getting Pokemon data from PokeAPI...')
+print('Getting Pokemon data & sprites from PokeAPI\nThis may take awhile...')
 
 for pokemon_id in range(1, 50):
 
@@ -55,23 +60,32 @@ for pokemon_id in range(1, 50):
             
             add_id(data['id'], ids)
             add_name(data['name'], names)
-            add_types(data['types'], primary_types, secondary_types)
+            add_types(data['types'], types)
             add_sprite(img_name, sprites)
 
 
-# Create csv file
-print('Creating dataset.csv...')
+print('Creating dataset files...')
 
+# Create csv files
 pokemon_dict = {
         'ID': ids,
         'Name' : names,
-        'PrimaryType' : primary_types,
-        'SecondaryType' : secondary_types,
-        'Sprites' : sprites
+        'Sprite' : sprites,
+        'Types' : types
 }
 
-df = pd.DataFrame(pokemon_dict)
-df.to_csv('../Dataset/dataset.csv', index = False)
+dataset = pd.DataFrame(pokemon_dict)
+trainset = dataset.sample(frac=0.8)
+testset = dataset.drop(trainset.index)
+
+dataset.to_csv('../Dataset/dataset.csv', index = False, header=False)
+trainset.to_csv('../Dataset/train.csv', index = False, header=False)
+testset.to_csv('../Dataset/test.csv', index = False, header=False)
+
+
+# Create train and test sprite folders
+generate_train(trainset)
+generate_test(testset)
+
 
 print('Complete.')
-

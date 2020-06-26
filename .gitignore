@@ -1,2 +1,5 @@
 /Dataset/
 /__pycache__/
+/DataProcessing/__pycache__/*
+*.pyc
+
